@@ -1,0 +1,139 @@
+<!-- emails.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail Clone - Inbox</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background: #f1f1f1;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .logo {
+            width: 40px;
+            margin-right: 20px;
+        }
+        .search {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 0 20px;
+        }
+        .email-container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+        .sidebar {
+            width: 200px;
+            background: #f1f1f1;
+            padding: 20px;
+        }
+        .compose-btn {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .emails-list {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .email-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .email-item:hover {
+            background: #f9f9f9;
+        }
+        .email-sender {
+            width: 200px;
+            font-weight: bold;
+        }
+        .email-subject {
+            flex-grow: 1;
+        }
+        .email-time {
+            width: 100px;
+            text-align: right;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://www.google.com/gmail/about/static/images/logo-gmail.png" alt="Gmail" class="logo">
+        <input type="text" class="search" placeholder="Search mail">
+        <button id="logoutBtn">Logout</button>
+    </div>
+
+    <div class="email-container">
+        <div class="sidebar">
+            <button class="compose-btn">Compose</button>
+            <div>Inbox</div>
+            <div>Sent</div>
+            <div>Drafts</div>
+            <div>Trash</div>
+        </div>
+
+        <div class="emails-list" id="emailsList">
+            <!-- Emails will be populated here -->
+        </div>
+    </div>
+
+    <script>
+        async function fetchEmails() {
+            try {
+                const response = await fetch('/api/emails');
+                const emails = await response.json();
+                displayEmails(emails);
+            } catch (error) {
+                console.error('Error fetching emails:', error);
+            }
+        }
+
+        function displayEmails(emails) {
+            const emailsList = document.getElementById('emailsList');
+            emailsList.innerHTML = emails.map(email => `
+                <div class="email-item" onclick="openEmail('${email.id}')">
+                    <div class="email-sender">${email.sender}</div>
+                    <div class="email-subject">${email.subject}</div>
+                    <div class="email-time">${formatDate(email.timestamp)}</div>
+                </div>
+            `).join('');
+        }
+
+        function formatDate(timestamp) {
+            return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function openEmail(id) {
+            // Implement email viewing logic
+            console.log('Opening email:', id);
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            // Implement logout logic
+            window.location.href = '/login.html';
+        });
+
+        // Fetch emails when page loads
+        fetchEmails();
+    </script>
+</body>
+</html>
